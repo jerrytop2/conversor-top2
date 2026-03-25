@@ -75,9 +75,18 @@ input:focus, select:focus { border-color: #0004ff; }
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 1.2rem;
+  background: #f0faf4;
+  border-radius: 12px;
+  border: 1px solid #b7e4c7;
 }
 
-.valor-resultado { font-size: 2rem; font-weight: 700; color: #1a1a2e; }
+.valor-resultado {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e7e2e;
+  background: none;
+}
 .taxa { font-size: 13px; color: #888; }
 
 .erro {
