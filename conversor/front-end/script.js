@@ -1,10 +1,7 @@
+
 const botao = document.getElementById('btn-converter')
 const btnInverter = document.getElementById('btn-inverter')
 
-
-
-
-//Inverter Cotações
 btnInverter.addEventListener('click', function() {
     const origem = document.getElementById('moeda-origem')
     const destino = document.getElementById('moeda-destino')
@@ -13,9 +10,8 @@ btnInverter.addEventListener('click', function() {
     destino.value = temp
 })
 
-// -----------------------------------------------------------------
-botao.addEventListener('click', function() {
-    const valor = document.getElementById('valor').value
+botao.addEventListener('click', async function() {
+    const valor = parseFloat(document.getElementById('valor').value)
     const moedao = document.getElementById('moeda-origem').value
     const moedad = document.getElementById('moeda-destino').value
 
@@ -25,33 +21,26 @@ botao.addEventListener('click', function() {
     resultado.classList.add('hidden')
     erro.classList.add('hidden')
 
-    async function fetchData(url) {
-  try {
-    // Await the fetch call to get the Response object
-    const response = await fetch(url);
+    try {
+        const response = await fetch(
+            `/converter?origem=${moedao}&destino=${moedad}&valor=${valor}`
+        )
 
-    // Check if the request was successful (status in the 200-299 range)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`)
 
-    // Await the response.json() call to parse the body
-    const data = await response.json();
-    const taxa = data.conversion_rates[moedad]
-    const taxan = (valor * taxa).toFixed(2)
+        const data = await response.json()
+        const taxa = data.taxa
+        const taxan = data.resultado.toFixed(2)
 
-    resultado.textContent = `${valor} ${moedao} = ${taxan} ${moedad}`
-    resultado.classList.remove('hidden')
+        resultado.innerHTML = `
+            <span class="valor-resultado">${valor} ${moedao} = ${taxan} ${moedad}</span>
+            <span class="taxa">1 ${moedao} = ${taxa.toFixed(4)} ${moedad}</span>
+        `
+        resultado.classList.remove('hidden')
 
-  } catch (error) {
+    } catch (error) {
         erro.textContent = 'Erro ao buscar cotação. Tente novamente.'
         erro.classList.remove('hidden')
         console.error(error)
     }
-}
-
-// Call the async function and handle the returned promise
-fetchData(`https://v6.exchangerate-api.com/v6/1e163c38d7e5e5d1c6623b30/latest/${moedao}`);
-
-
 })
